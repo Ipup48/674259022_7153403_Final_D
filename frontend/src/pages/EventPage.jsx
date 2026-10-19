@@ -11,6 +11,8 @@ import {
   GraduationCap,
   Users,
 } from "lucide-react";
+
+// ตรวจสอบ Relative Path ให้ถูกต้อง (ถอย 1 ชั้นออกจากโฟลเดอร์ pages เพื่อเข้าโฟลเดอร์ services และ components)
 import eventService from "../services/eventService";
 import EventTable from "../components/EventTable";
 import EventFormModal from "../components/EventFormModal";
@@ -142,32 +144,24 @@ export default function EventPage() {
       value: totalCount,
       icon: Layers,
       color: "from-teal-600 to-emerald-700",
-      textColor: "text-teal-700",
-      bgColor: "bg-teal-50",
     },
     {
       label: "หมวดอบรม",
       value: trainingCount,
       icon: GraduationCap,
       color: "from-indigo-600 to-blue-700",
-      textColor: "text-indigo-700",
-      bgColor: "bg-indigo-50",
     },
     {
       label: "หมวดสัมมนา",
       value: seminarCount,
       icon: Users,
       color: "from-purple-600 to-pink-700",
-      textColor: "text-purple-700",
-      bgColor: "bg-purple-50",
     },
     {
       label: "หมวดจิตอาสา",
       value: volunteerCount,
       icon: HeartHandshake,
       color: "from-emerald-600 to-teal-700",
-      textColor: "text-emerald-700",
-      bgColor: "bg-emerald-50",
     },
   ];
 
