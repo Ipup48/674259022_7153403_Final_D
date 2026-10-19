@@ -1,7 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, AlertCircle } from 'lucide-react';
+import { X, Save, AlertCircle, CalendarPlus, Pencil } from 'lucide-react';
 
 const CATEGORIES = ['อบรม', 'สัมมนา', 'จิตอาสา'];
+
+const inputBase =
+  'w-full px-3.5 py-2.5 text-sm bg-white border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 transition-all text-slate-800 placeholder:text-slate-400';
+const inputOk = 'border-slate-200 focus:border-brand-500';
+const inputErr = 'border-rose-400 focus:border-rose-500';
+
+const Label = ({ children }) => (
+  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+    {children} <span className="text-rose-500">*</span>
+  </label>
+);
+
+const FieldError = ({ message }) =>
+  message ? (
+    <p className="text-xs text-rose-500 flex items-center gap-1 mt-1.5">
+      <AlertCircle className="w-3 h-3" /> {message}
+    </p>
+  ) : null;
 
 export default function EventFormModal({ isOpen, onClose, onSave, event = null, isSubmitting = false }) {
   const isEditMode = Boolean(event && event.id);
@@ -84,34 +102,37 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-950/60 backdrop-blur-sm">
+      <div className="anim-panel bg-white rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">
-              {isEditMode ? `แก้ไขกิจกรรม #${event.id}` : 'เพิ่มกิจกรรมใหม่'}
-            </h3>
-            <p className="text-xs text-slate-500">
-              {isEditMode ? 'ปรับปรุงข้อมูลกิจกรรมในระบบ' : 'กรอกข้อมูลรายละเอียดของกิจกรรมให้ครบถ้วน'}
-            </p>
+        <div className="flex items-center justify-between gap-4 px-6 py-5 bg-brand-950 text-white">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-sun text-brand-950 flex items-center justify-center shrink-0">
+              {isEditMode ? <Pencil className="w-5 h-5" /> : <CalendarPlus className="w-5 h-5" />}
+            </div>
+            <div>
+              <h3 className="text-lg font-bold leading-tight">
+                {isEditMode ? `แก้ไขกิจกรรม #${event.id}` : 'เพิ่มกิจกรรมใหม่'}
+              </h3>
+              <p className="text-xs text-brand-200 mt-0.5">
+                {isEditMode ? 'ปรับปรุงข้อมูลกิจกรรมในระบบ' : 'กรอกข้อมูลรายละเอียดของกิจกรรมให้ครบถ้วน'}
+              </p>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+            className="text-brand-200 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              ชื่อกิจกรรม <span className="text-rose-500">*</span>
-            </label>
+            <Label>ชื่อกิจกรรม</Label>
             <input
               type="text"
               value={formData.title}
@@ -121,17 +142,11 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
               }}
               placeholder="เช่น อบรมเชิงปฏิบัติการพัฒนาเว็บแอปพลิเคชัน"
               maxLength={150}
-              className={`w-full px-3.5 py-2 text-sm bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all ${
-                errors.title ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
-              }`}
+              className={`${inputBase} ${errors.title ? inputErr : inputOk}`}
             />
-            <div className="flex justify-between items-center mt-1">
-              {errors.title ? (
-                <p className="text-xs text-rose-500 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.title}
-                </p>
-              ) : <span />}
-              <span className="text-[11px] text-slate-400 tabular-nums">
+            <div className="flex justify-between items-start">
+              {errors.title ? <FieldError message={errors.title} /> : <span />}
+              <span className="text-[11px] text-slate-400 tabular-nums mt-1.5">
                 {formData.title.length}/150
               </span>
             </div>
@@ -139,9 +154,7 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
 
           {/* Organizer */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              ผู้จัดกิจกรรม <span className="text-rose-500">*</span>
-            </label>
+            <Label>ผู้จัดกิจกรรม</Label>
             <input
               type="text"
               value={formData.organizer}
@@ -151,31 +164,22 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
               }}
               placeholder="เช่น สาขาวิชาวิทยาการคอมพิวเตอร์ หรือ ชมรมจิตอาสา"
               maxLength={100}
-              className={`w-full px-3.5 py-2 text-sm bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all ${
-                errors.organizer ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
-              }`}
+              className={`${inputBase} ${errors.organizer ? inputErr : inputOk}`}
             />
-            {errors.organizer && (
-              <p className="text-xs text-rose-500 flex items-center gap-1 mt-1">
-                <AlertCircle className="w-3 h-3" /> {errors.organizer}
-              </p>
-            )}
+            <FieldError message={errors.organizer} />
           </div>
 
           {/* 2-column: Category & Event Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Category Dropdown */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                หมวดหมู่ <span className="text-rose-500">*</span>
-              </label>
+              <Label>หมวดหมู่</Label>
               <select
                 value={formData.category}
                 onChange={(e) => {
                   setFormData({ ...formData, category: e.target.value });
                   if (errors.category) setErrors({ ...errors, category: null });
                 }}
-                className="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-800"
+                className={`${inputBase} ${errors.category ? inputErr : inputOk} cursor-pointer`}
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -183,13 +187,11 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
                   </option>
                 ))}
               </select>
+              <FieldError message={errors.category} />
             </div>
 
-            {/* Event Date Picker */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                วันที่จัดกิจกรรม <span className="text-rose-500">*</span>
-              </label>
+              <Label>วันที่จัดกิจกรรม</Label>
               <input
                 type="date"
                 value={formData.eventDate}
@@ -197,23 +199,15 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
                   setFormData({ ...formData, eventDate: e.target.value });
                   if (errors.eventDate) setErrors({ ...errors, eventDate: null });
                 }}
-                className={`w-full px-3.5 py-2 text-sm bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all ${
-                  errors.eventDate ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
-                }`}
+                className={`${inputBase} ${errors.eventDate ? inputErr : inputOk}`}
               />
-              {errors.eventDate && (
-                <p className="text-xs text-rose-500 flex items-center gap-1 mt-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.eventDate}
-                </p>
-              )}
+              <FieldError message={errors.eventDate} />
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              รายละเอียดกิจกรรม <span className="text-rose-500">*</span>
-            </label>
+            <Label>รายละเอียดกิจกรรม</Label>
             <textarea
               rows={4}
               value={formData.description}
@@ -223,54 +217,50 @@ export default function EventFormModal({ isOpen, onClose, onSave, event = null, 
               }}
               placeholder="ระบุรายละเอียด วัตถุประสงค์ กำหนดการ หรือสถานที่จัดกิจกรรม (1-2,000 ตัวอักษร)"
               maxLength={2000}
-              className={`w-full px-3.5 py-2 text-sm bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all ${
-                errors.description ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
-              }`}
+              className={`${inputBase} resize-y ${errors.description ? inputErr : inputOk}`}
             />
-            <div className="flex justify-between items-center mt-1">
-              {errors.description ? (
-                <p className="text-xs text-rose-500 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.description}
-                </p>
-              ) : <span />}
-              <span className="text-[11px] text-slate-400 tabular-nums">
+            <div className="flex justify-between items-start">
+              {errors.description ? <FieldError message={errors.description} /> : <span />}
+              <span className="text-[11px] text-slate-400 tabular-nums mt-1.5">
                 {formData.description.length}/2000
               </span>
             </div>
           </div>
 
-          {/* Status Checkbox / Switch */}
-          <div className="pt-2 border-t border-slate-100">
-            <label className="flex items-center gap-3 cursor-pointer select-none">
+          {/* Status switch */}
+          <label className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer select-none">
+            <div>
+              <span className="text-sm font-semibold text-slate-800">เผยแพร่กิจกรรมทันที (Published)</span>
+              <p className="text-xs text-slate-500 mt-0.5">หากไม่เลือก สถานะกิจกรรมจะถูกบันทึกเป็น "ฉบับร่าง (Draft)"</p>
+            </div>
+            <span className="relative shrink-0">
               <input
                 type="checkbox"
                 checked={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.checked })}
-                className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
+                className="peer sr-only"
               />
-              <div>
-                <span className="text-sm font-medium text-slate-800">เผยแพร่กิจกรรมทันที (Published)</span>
-                <p className="text-xs text-slate-500">หากไม่เลือก สถานะกิจกรรมจะถูกบันทึกเป็น "ฉบับร่าง (Draft)"</p>
-              </div>
-            </label>
-          </div>
+              <span className="block w-11 h-6 rounded-full bg-slate-300 peer-checked:bg-brand-600 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500 peer-focus-visible:ring-offset-2" />
+              <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
+            </span>
+          </label>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-brand-700 hover:bg-brand-800 rounded-xl transition-colors shadow-lg shadow-brand-700/20 disabled:opacity-50"
             >
-              <Save className="w-3.5 h-3.5" />
+              <Save className="w-4 h-4" />
               {isSubmitting ? 'กำลังบันทึก...' : isEditMode ? 'บันทึกการแก้ไข' : 'สร้างกิจกรรม'}
             </button>
           </div>
