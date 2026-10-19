@@ -1,15 +1,30 @@
-const { Sequelize } = require('sequelize');
-const path = require('path');
-require('dotenv').config();
+const { Sequelize } = require("sequelize");
 
-const dbPath = process.env.DB_STORAGE 
-  ? path.resolve(process.env.DB_STORAGE) 
-  : path.join(__dirname, '../database.sqlite');
+// ดึงค่า Connection String จาก Environment Variable (รองรับทั้ง DATABASE_URL และ POSTGRES_URL)
+const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: dbPath,
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
-});
+let sequelize;
+
+if (connectionString) {
+  // หากมี Connection String ให้เชื่อมต่อกับ Neon PostgreSQL
+  sequelize = new Sequelize(connectionString, {
+    dialect: "postgres",
+    protocol: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // จำเป็นสำหรับการเชื่อมต่อกับ Neon SSL บน Render
+      },
+    },
+    logging: false,
+  });
+} else {
+  // หากไม่มี ให้ใช้อย่างเดิมในเครื่อง (SQLite)
+  sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: process.env.DB_STORAGE || "./database.sqlite",
+    logging: false,
+  });
+}
 
 module.exports = sequelize;
