@@ -1,25 +1,31 @@
 const { Sequelize } = require("sequelize");
 
-// ดึงค่า Connection String จาก Environment Variable (รองรับทั้ง DATABASE_URL และ POSTGRES_URL)
+// ดึงค่า Connection String (ลำดับความสำคัญ: DATABASE_URL > POSTGRES_URL)
 const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 let sequelize;
 
 if (connectionString) {
-  // หากมี Connection String ให้เชื่อมต่อกับ Neon PostgreSQL
+  // เชื่อมต่อ Neon PostgreSQL
   sequelize = new Sequelize(connectionString, {
     dialect: "postgres",
-    protocol: "postgres",
+    dialectModule: require("pg"), // บังคับใช้ pg module สำหรับ PostgreSQL
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false, // จำเป็นสำหรับการเชื่อมต่อกับ Neon SSL บน Render
+        rejectUnauthorized: false, // ป้องกันปัญหา SSL Certificate verification บน Cloud (Render/Vercel)
       },
     },
-    logging: false,
+    logging: false, // ปิด log SQL queries ใน production
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   });
 } else {
-  // หากไม่มี ให้ใช้อย่างเดิมในเครื่อง (SQLite)
+  // fallback สำหรับรัน Local (SQLite)
   sequelize = new Sequelize({
     dialect: "sqlite",
     storage: process.env.DB_STORAGE || "./database.sqlite",
