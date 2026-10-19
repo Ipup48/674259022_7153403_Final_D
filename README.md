@@ -184,3 +184,6 @@ docker compose down -v
 2. Framework Preset: **Vite**
 3. ตั้ง Environment Variable: `VITE_API_URL=https://<your-render-backend-url>/api/events`
 4. ไฟล์ `vercel.json` ได้ถูกกำหนดไว้แล้วเพื่อรองรับ Single Page Application (SPA) Routing
+
+Frontend vercel : 674259022-7153403-final-d.vercel.app
+Backend render : https://six74259022-7153403-final-d.onrender.com
