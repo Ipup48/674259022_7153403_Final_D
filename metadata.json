@@ -1,0 +1,6 @@
+{
+  "name": "ระบบจัดการกิจกรรม (Event Management System)",
+  "description": "ระบบจัดการกิจกรรม ชุดโจทย์ที่ 4 หมวดหมู่ D (อบรม, สัมมนา, จิตอาสา) - นายวุฒิชัย จันทร์มีชัย",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

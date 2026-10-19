@@ -1,0 +1,15 @@
+{
+  "watch": [
+    "index.js",
+    "config",
+    "controller",
+    "model",
+    "router"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "database.sqlite*",
+    "node_modules",
+    "seeders"
+  ]
+}

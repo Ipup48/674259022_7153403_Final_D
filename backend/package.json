@@ -1,0 +1,32 @@
+{
+  "name": "event-management-backend",
+  "version": "1.0.0",
+  "description": "Backend API ระบบจัดการกิจกรรม ชุดโจทย์ที่ 4 หมวดหมู่ D (อบรม, สัมมนา, จิตอาสา) - นายวุฒิชัย จันทร์มีชัย",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "seed": "node seeders/seed.js"
+  },
+  "keywords": [
+    "express",
+    "sequelize",
+    "sqlite",
+    "events",
+    "crud"
+  ],
+  "author": "นายวุฒิชัย จันทร์มีชัย",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "pg": "^8.23.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
